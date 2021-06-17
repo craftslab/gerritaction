@@ -1,0 +1,13 @@
+black
+colorama
+coverage
+coveralls
+flake8
+hypothesis
+mypy
+pre-commit
+pytest
+requests
+setuptools
+twine
+wheel

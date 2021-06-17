@@ -1,0 +1,3 @@
+include gerritaction/config/*.json
+include LICENSE
+include action.py
