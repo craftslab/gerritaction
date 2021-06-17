@@ -22,7 +22,7 @@ class Argument(object):
             "--gerrit-action",
             action="store",
             dest="gerrit_action",
-            help="gerrit action (delete-reviewer:{account-id,...} remove-attention:{account-id,...})",
+            help="gerrit action (add-reviewer:{account-id,...} delete-reviewer:{account-id,...} add-attention:{account-id,...} remove-attention:{account-id,...})",
             required=True,
         )
         self._parser.add_argument(

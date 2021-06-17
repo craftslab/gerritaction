@@ -63,9 +63,13 @@ class Action(object):
             if len(item.split(Separator.ACTION)) != 2:
                 raise ActionException("action invalid")
             action, accounts = item.split(Separator.ACTION)
-            if action == Proto.DELETE_REVIEWER:
-                self._delete_reviewer(accounts)
+            if action == Proto.ADD_REVIEWER:
+                self._add_reviewer(accounts.split(Separator.ACCOUNT))
+            elif action == Proto.DELETE_REVIEWER:
+                self._delete_reviewer(accounts.split(Separator.ACCOUNT))
+            elif action == Proto.ADD_ATTENTION:
+                self._add_attention(accounts.split(Separator.ACCOUNT))
             elif action == Proto.REMOVE_ATTENTION:
-                self._remove_attention(accounts)
+                self._remove_attention(accounts.split(Separator.ACCOUNT))
             else:
                 raise ActionException("action invalid")
