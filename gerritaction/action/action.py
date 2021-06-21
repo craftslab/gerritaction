@@ -26,37 +26,27 @@ class Action(object):
             raise ActionException("changes invalid")
 
     def _query_changes(self):
-        # TODO
-        start = 0
-        return self._gerrit.query_changes(search=self._config.gerrit_query, start=start)
+        return self._gerrit.query_changes(search=self._config.gerrit_query, start=0)
 
     def _add_reviewer(self, accounts):
         for account in accounts:
             for change in self._changes:
-                ret = self._gerrit.add_reviewer(change, account)
-                if ret is None:
-                    raise ActionException("failed to add reviewer")
+                _ = self._gerrit.add_reviewer(change, account)
 
     def _delete_reviewer(self, accounts):
         for account in accounts:
             for change in self._changes:
-                ret = self._gerrit.delete_reviewer(change, account)
-                if ret is None:
-                    raise ActionException("failed to delete reviewer")
+                _ = self._gerrit.delete_reviewer(change, account)
 
     def _add_attention(self, accounts):
         for account in accounts:
             for change in self._changes:
-                ret = self._gerrit.add_attention(change, account)
-                if ret is None:
-                    raise ActionException("failed to add attention")
+                _ = self._gerrit.add_attention(change, account)
 
     def _remove_attention(self, accounts):
         for account in accounts:
             for change in self._changes:
-                ret = self._gerrit.remove_attention(change, account)
-                if ret is None:
-                    raise ActionException("failed to remove attention")
+                _ = self._gerrit.remove_attention(change, account)
 
     def run(self):
         for item in self._config.gerrit_action.split(Separator.GROUP):

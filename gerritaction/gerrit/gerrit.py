@@ -3,6 +3,8 @@
 import json
 import requests
 
+from gerritaction.logger.logger import Logger
+
 
 class GerritException(Exception):
     def __init__(self, info):
@@ -14,6 +16,8 @@ class GerritException(Exception):
 
 
 class Gerrit(object):
+    _QUERY_LIMIT = 1000
+
     def __init__(self, config):
         if config is None or config.get("gerrit", None) is None:
             raise GerritException("config invalid")
@@ -29,18 +33,33 @@ class Gerrit(object):
             self._url = self._host + ":" + self._port
 
     def query_changes(self, search, start):
-        payload = {"o": self._query["option"], "q": search, "start": start}
-        if len(self._pass) != 0 and len(self._user) != 0:
-            response = requests.get(
-                url=self._url + "/changes/",
-                auth=(self._user, self._pass),
-                params=payload,
-            )
-        else:
-            response = requests.get(url=self._url + "/changes/", params=payload)
-        if response.status_code != requests.codes.ok:
-            return None
-        return json.loads(response.text.replace(")]}'", ""))
+        def _helper(search, start):
+            payload = {
+                "o": self._query["option"],
+                "q": search,
+                "start": start,
+                "n": self._QUERY_LIMIT,
+            }
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/changes/",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(url=self._url + "/changes/", params=payload)
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to query change with search %s" % search)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        buf = _helper(search, start)
+        if buf is None or len(buf) == 0:
+            return []
+        if buf[-1].get("_more_changes", False) is False:
+            return buf
+        buf.extend(self.query_changes(search, start + len(buf)))
+        return buf
 
     def get_detail(self, change):
         if len(self._pass) != 0 and len(self._user) != 0:
@@ -53,6 +72,7 @@ class Gerrit(object):
                 url=self._url + "/changes/" + str(change["_number"]) + "/detail"
             )
         if response.status_code != requests.codes.ok:
+            Logger.error("failed to get detail for change %s" % change["_number"])
             return None
         return json.loads(response.text.replace(")]}'", ""))
 
@@ -70,6 +90,9 @@ class Gerrit(object):
                 json=args,
             )
         if response.status_code != requests.codes.ok:
+            Logger.error(
+                "failed to add reviewer %s to change %s" % (account, change["_number"])
+            )
             return None
         return json.loads(response.text.replace(")]}'", ""))
 
@@ -95,6 +118,10 @@ class Gerrit(object):
             response.status_code != requests.codes.ok
             and response.status_code != requests.codes.no_content
         ):
+            Logger.error(
+                "failed to delete reviewer %s from change %s"
+                % (account, change["_number"])
+            )
             return None
         return json.loads("{}")
 
@@ -112,6 +139,9 @@ class Gerrit(object):
                 json=args,
             )
         if response.status_code != requests.codes.ok:
+            Logger.error(
+                "failed to add attention %s to change %s" % (account, change["_number"])
+            )
             return None
         return json.loads(response.text.replace(")]}'", ""))
 
@@ -140,5 +170,9 @@ class Gerrit(object):
             response.status_code != requests.codes.ok
             and response.status_code != requests.codes.no_content
         ):
+            Logger.error(
+                "failed to remove attention %s from change %s"
+                % (account, change["_number"])
+            )
             return None
         return json.loads("{}")
