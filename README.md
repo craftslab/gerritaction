@@ -1,7 +1,6 @@
 # gerritaction
 
 [![Actions Status](https://github.com/craftslab/gerritaction/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/craftslab/gerritaction/actions?query=workflow%3ACI)
-[![Docker](https://img.shields.io/docker/pulls/craftslab/gerritaction)](https://hub.docker.com/r/craftslab/gerritaction)
 [![License](https://img.shields.io/github/license/craftslab/gerritaction.svg?color=brightgreen)](https://github.com/craftslab/gerritaction/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/gerritaction.svg?color=brightgreen)](https://pypi.org/project/gerritaction)
 [![Tag](https://img.shields.io/github/tag/craftslab/gerritaction.svg?color=brightgreen)](https://github.com/craftslab/gerritaction/tags)
