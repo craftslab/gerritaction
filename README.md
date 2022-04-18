@@ -26,7 +26,7 @@ git clone https://github.com/craftslab/gerritaction.git
 
 cd gerritaction
 pip install -Ur requirements.txt
-python action.py --config-file="config.yml" --gerrit-action="delete-reviewer:{account-id,...}" --gerrit-query="since:2021-01-01 until:2021-01-02"
+python action.py --config-file="config.yml" --gerrit-action="delete-reviewer:account-id,..." --gerrit-query="since:2021-01-01 until:2021-01-02"
 ```
 
 
@@ -38,7 +38,7 @@ git clone https://github.com/craftslab/gerritaction.git
 
 cd gerritaction
 docker build --no-cache -f Dockerfile -t craftslab/gerritaction:latest .
-docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --config-file="config.yml" --gerrit-action="delete-reviewer:{account-id,...}" --gerrit-query="since:2021-01-01 until:2021-01-02"
+docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --config-file="config.yml" --gerrit-action="delete-reviewer:account-id,..." --gerrit-query="since:2021-01-01 until:2021-01-02"
 ```
 
 
@@ -46,8 +46,7 @@ docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --confi
 ## Usage
 
 ```
-usage: action.py [-h] --config-file CONFIG_FILE --gerrit-action GERRIT_ACTION
-                 --gerrit-query GERRIT_QUERY [-v]
+usage: action.py [-h] --config-file CONFIG_FILE --gerrit-action GERRIT_ACTION --gerrit-query GERRIT_QUERY [-v]
 
 Gerrit Action
 
@@ -56,12 +55,9 @@ optional arguments:
   --config-file CONFIG_FILE
                         config file (.yml)
   --gerrit-action GERRIT_ACTION
-                        gerrit action (add-reviewer:{account-id,...} delete-
-                        reviewer:{account-id,...} add-attention:{account-
-                        id,...} remove-attention:{account-id,...})
+                        gerrit action (add-reviewer:account-id,... delete-reviewer:account-id,... add-attention:account-id,... remove-attention:account-id,... approve-change:Code-Review=+2,... submit-change)
   --gerrit-query GERRIT_QUERY
-                        gerrit query (status:open since:2021-01-01
-                        until:2021-01-02)
+                        gerrit query (status:open since:2021-01-01 until:2021-01-02)
   -v, --version         show program's version number and exit
 ```
 
