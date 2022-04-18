@@ -3,6 +3,8 @@
 import json
 import requests
 
+from ..proto.proto import Separator
+
 from gerritaction.logger.logger import Logger
 
 
@@ -176,3 +178,76 @@ class Gerrit(object):
             )
             return None
         return json.loads("{}")
+
+    def approve_change(self, change, labels):
+        def _helper(labels):
+            buf = {}
+            for item in labels:
+                key, val = item.split(Separator.LABEL)
+                buf[key] = int(val)
+            return buf
+
+        args = {
+            "comments": {},
+            "labels": _helper(labels),
+            "message": "Approved by %s" % self._user,
+            "tag": "",
+        }
+        if len(self._pass) != 0 and len(self._user) != 0:
+            response = requests.post(
+                url=self._url
+                + "/changes/"
+                + str(change["_number"])
+                + "/revisions/"
+                + str(change["current_revision"])
+                + "/review",
+                auth=(self._user, self._pass),
+                json=args,
+            )
+        else:
+            response = requests.post(
+                url=self._url
+                + "/changes/"
+                + str(change["_number"])
+                + "/revisions/"
+                + str(change["current_revision"])
+                + "/review",
+                json=args,
+            )
+        if response.status_code != requests.codes.ok:
+            Logger.error(
+                "failed to approve change %s by account %s"
+                % (change["_number"], self._user)
+            )
+            return None
+        return json.loads(response.text.replace(")]}'", ""))
+
+    def submit_change(self, change):
+        if len(self._pass) != 0 and len(self._user) != 0:
+            response = requests.post(
+                url=self._url
+                + "/changes/"
+                + str(change["_number"])
+                + "/revisions/"
+                + str(change["current_revision"])
+                + "/submit",
+                auth=(self._user, self._pass),
+                json=None,
+            )
+        else:
+            response = requests.post(
+                url=self._url
+                + "/changes/"
+                + str(change["_number"])
+                + "/revisions/"
+                + str(change["current_revision"])
+                + "/submit",
+                json=None,
+            )
+        if response.status_code != requests.codes.ok:
+            Logger.error(
+                "failed to submit change %s by account %s"
+                % (change["_number"], self._user)
+            )
+            return None
+        return json.loads(response.text.replace(")]}'", ""))

@@ -48,18 +48,31 @@ class Action(object):
             for change in self._changes:
                 _ = self._gerrit.remove_attention(change, account)
 
+    def _approve_change(self, labels):
+        for change in self._changes:
+            _ = self._gerrit.approve_change(change, labels)
+
+    def _submit_change(self):
+        for change in self._changes:
+            _ = self._gerrit.submit_change(change)
+
     def run(self):
         for item in self._config.gerrit_action.split(Separator.GROUP):
-            if len(item.split(Separator.ACTION)) != 2:
+            if len(item.split(Separator.ACTION)) > 2:
                 raise ActionException("action invalid")
-            action, accounts = item.split(Separator.ACTION)
+            if Proto.SUBMIT_CHANGE in item:
+                self._submit_change()
+                continue
+            action, content = item.split(Separator.ACTION)
             if action == Proto.ADD_REVIEWER:
-                self._add_reviewer(accounts.split(Separator.ACCOUNT))
+                self._add_reviewer(content.split(Separator.CONTENT))
             elif action == Proto.DELETE_REVIEWER:
-                self._delete_reviewer(accounts.split(Separator.ACCOUNT))
+                self._delete_reviewer(content.split(Separator.CONTENT))
             elif action == Proto.ADD_ATTENTION:
-                self._add_attention(accounts.split(Separator.ACCOUNT))
+                self._add_attention(content.split(Separator.CONTENT))
             elif action == Proto.REMOVE_ATTENTION:
-                self._remove_attention(accounts.split(Separator.ACCOUNT))
+                self._remove_attention(content.split(Separator.CONTENT))
+            elif action == Proto.APPROVE_CHANGE:
+                self._approve_change(content.split(Separator.CONTENT))
             else:
                 raise ActionException("action invalid")
