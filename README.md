@@ -55,7 +55,7 @@ optional arguments:
   --config-file CONFIG_FILE
                         config file (.yml)
   --gerrit-action GERRIT_ACTION
-                        gerrit action (add-reviewer:account-id,... delete-reviewer:account-id,... add-attention:account-id,... remove-attention:account-id,... approve-change:Code-Review=+2,... submit-change)
+                        gerrit action (add-reviewer:account-id,... delete-reviewer:account-id,... add-attention:account-id,... remove-attention:account-id,... approve-change:Code-Review=+2,... delete-change submit-change)
   --gerrit-query GERRIT_QUERY
                         gerrit query (status:open since:2021-01-01 until:2021-01-02)
   -v, --version         show program's version number and exit

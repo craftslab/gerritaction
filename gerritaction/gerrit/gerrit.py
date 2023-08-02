@@ -222,6 +222,25 @@ class Gerrit(object):
             return None
         return json.loads(response.text.replace(")]}'", ""))
 
+    def delete_change(self, change):
+        if len(self._pass) != 0 and len(self._user) != 0:
+            response = requests.delete(
+                url=self._url + "/changes/" + str(change["_number"]),
+                auth=(self._user, self._pass),
+                json=None,
+            )
+        else:
+            response = requests.delete(
+                url=self._url + "/changes/" + str(change["_number"]),
+                json=None,
+            )
+        if response.status_code != requests.codes.ok:
+            Logger.error(
+                "failed to delete change %s by account %s"
+                % (change["_number"], self._user)
+            )
+        return None
+
     def submit_change(self, change):
         if len(self._pass) != 0 and len(self._user) != 0:
             response = requests.post(

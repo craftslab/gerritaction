@@ -7,6 +7,7 @@ class Proto:
     ADD_ATTENTION = "add-attention"
     REMOVE_ATTENTION = "remove-attention"
     APPROVE_CHANGE = "approve-change"
+    DELETE_CHANGE = "delete-change"
     SUBMIT_CHANGE = "submit-change"
 
 

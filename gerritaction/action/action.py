@@ -56,10 +56,17 @@ class Action(object):
         for change in self._changes:
             _ = self._gerrit.submit_change(change)
 
+    def _delete_change(self):
+        for change in self._changes:
+            _ = self._gerrit.delete_change(change)
+
     def run(self):
         for item in self._config.gerrit_action.split(Separator.GROUP):
             if len(item.split(Separator.ACTION)) > 2:
                 raise ActionException("action invalid")
+            if Proto.DELETE_CHANGE in item:
+                self._delete_change()
+                continue
             if Proto.SUBMIT_CHANGE in item:
                 self._submit_change()
                 continue
