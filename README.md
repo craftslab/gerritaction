@@ -26,7 +26,7 @@ git clone https://github.com/craftslab/gerritaction.git
 
 cd gerritaction
 pip install -Ur requirements.txt
-python action.py --config-file="config.yml" --gerrit-action="delete-reviewer:account-id,..." --gerrit-query="since:2021-01-01 until:2021-01-02"
+python action.py --config-file="config.yml" --change-query="since:2024-01-01 until:2024-01-02"
 ```
 
 
@@ -38,7 +38,7 @@ git clone https://github.com/craftslab/gerritaction.git
 
 cd gerritaction
 docker build --no-cache -f Dockerfile -t craftslab/gerritaction:latest .
-docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --config-file="config.yml" --gerrit-action="delete-reviewer:account-id,..." --gerrit-query="since:2021-01-01 until:2021-01-02"
+docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --config-file="config.yml" --change-query="since:2024-01-01 until:2024-01-02"
 ```
 
 
@@ -46,18 +46,31 @@ docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --confi
 ## Usage
 
 ```
-usage: action.py [-h] --config-file CONFIG_FILE --gerrit-action GERRIT_ACTION --gerrit-query GERRIT_QUERY [-v]
+usage: action.py [-h] --config-file CONFIG_FILE
+                 [--account-query ACCOUNT_QUERY] [--change-query CHANGE_QUERY]
+                 [--change-action CHANGE_ACTION] [--group-query GROUP_QUERY]
+                 [--project-query PROJECT_QUERY] [-v]
 
 Gerrit Action
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --config-file CONFIG_FILE
                         config file (.yml)
-  --gerrit-action GERRIT_ACTION
-                        gerrit action (add-reviewer:account-id,... delete-reviewer:account-id,... add-attention:account-id,... remove-attention:account-id,... approve-change:Code-Review=+2,... delete-change submit-change)
-  --gerrit-query GERRIT_QUERY
-                        gerrit query (status:open since:2021-01-01 until:2021-01-02)
+  --account-query ACCOUNT_QUERY
+                        account query (name:john email:example.com)
+  --change-query CHANGE_QUERY
+                        change query (status:open since:2024-01-01
+                        until:2024-01-02)
+  --change-action CHANGE_ACTION
+                        change action (add-reviewer:account-id,... delete-
+                        reviewer:account-id,... add-attention:account-id,...
+                        remove-attention:account-id,... approve-change:Code-
+                        Review=+2,... delete-change submit-change)
+  --group-query GROUP_QUERY
+                        group query (name:admin member:john)
+  --project-query PROJECT_QUERY
+                        project query (name:test state:active)
   -v, --version         show program's version number and exit
 ```
 
@@ -80,9 +93,6 @@ spec:
     port: 8080
     user: user
     pass: pass
-    query:
-      option:
-        - CURRENT_REVISION
 ```
 
 

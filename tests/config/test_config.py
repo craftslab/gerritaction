@@ -51,21 +51,63 @@ def test_config():
         assert True
 
     try:
-        config.gerrit_action = 0
+        config.account_query = 0
     except ConfigException as _:
         assert True
     else:
         assert False
 
     try:
-        config.gerrit_action = ""
+        config.account_query = ""
     except ConfigException as _:
         assert True
     else:
         assert False
 
     try:
-        config.gerrit_action = (
+        config.account_query = ("account query (name:john email:example.com)",)
+    except ConfigException as _:
+        assert False
+    else:
+        assert True
+
+    try:
+        config.change_query = 0
+    except ConfigException as _:
+        assert True
+    else:
+        assert False
+
+    try:
+        config.change_query = ""
+    except ConfigException as _:
+        assert True
+    else:
+        assert False
+
+    try:
+        config.change_query = "change query (since:2024-01-01 until:2024-01-02)"
+    except ConfigException as _:
+        assert False
+    else:
+        assert True
+
+    try:
+        config.change_action = 0
+    except ConfigException as _:
+        assert True
+    else:
+        assert False
+
+    try:
+        config.change_action = ""
+    except ConfigException as _:
+        assert True
+    else:
+        assert False
+
+    try:
+        config.change_action = (
             "delete-reviewer:{account-id,...},remove-attention:{account-id,...})"
         )
     except ConfigException as _:
@@ -74,21 +116,42 @@ def test_config():
         assert True
 
     try:
-        config.gerrit_query = 0
+        config.group_query = 0
     except ConfigException as _:
         assert True
     else:
         assert False
 
     try:
-        config.gerrit_query = ""
+        config.group_query = ""
     except ConfigException as _:
         assert True
     else:
         assert False
 
     try:
-        config.gerrit_query = "gerrit query (since:2021-01-01 until:2021-01-02)"
+        config.group_query = ("group query (name:admin member:john)",)
+    except ConfigException as _:
+        assert False
+    else:
+        assert True
+
+    try:
+        config.project_query = 0
+    except ConfigException as _:
+        assert True
+    else:
+        assert False
+
+    try:
+        config.project_query = ""
+    except ConfigException as _:
+        assert True
+    else:
+        assert False
+
+    try:
+        config.project_query = ("project query (name:test state:active)",)
     except ConfigException as _:
         assert False
     else:

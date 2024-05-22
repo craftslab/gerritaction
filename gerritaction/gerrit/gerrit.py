@@ -18,7 +18,14 @@ class GerritException(Exception):
 
 
 class Gerrit(object):
-    _QUERY_LIMIT = 1000
+    _ACCOUNT_LIMIT = 1000
+    _ACCOUNT_OPTION = ["DETAILS"]
+    _CHANGE_LIMIT = 1000
+    _CHANGE_OPTION = ["CURRENT_REVISION"]
+    _GROUP_LIMIT = 1000
+    _GROUP_OPTION = ["INCLUDES"]
+    _PROJECT_LIMIT = 1000
+    _PROJECT_OPTION = []
 
     def __init__(self, config):
         if config is None or config.get("gerrit", None) is None:
@@ -28,19 +35,47 @@ class Gerrit(object):
         self._port = str(self._config.get("port", 8080))
         self._user = str(self._config.get("user", ""))
         self._pass = str(self._config.get("pass", ""))
-        self._query = self._config.get("query", {"option": ["CURRENT_REVISION"]})
         if len(self._pass) != 0 and len(self._user) != 0:
             self._url = self._host + ":" + self._port + "/a"
         else:
             self._url = self._host + ":" + self._port
 
-    def query_changes(self, search, start):
-        def _helper(search, start):
+    def query_account(self, search, start):
+        def _helper(_search, _start):
             payload = {
-                "o": self._query["option"],
-                "q": search,
-                "start": start,
-                "n": self._QUERY_LIMIT,
+                "o": self._ACCOUNT_OPTION,
+                "q": _search,
+                "start": _start,
+                "n": self._ACCOUNT_LIMIT,
+            }
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/accounts/",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(url=self._url + "/accounts/", params=payload)
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to query account with search %s" % _search)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        buf = _helper(search, start)
+        if buf is None or len(buf) == 0:
+            return []
+        if buf[-1].get("_more_accounts", False) is False:
+            return buf
+        buf.extend(self.query_account(search, start + len(buf)))
+        return buf
+
+    def query_change(self, search, start):
+        def _helper(_search, _start):
+            payload = {
+                "o": self._CHANGE_OPTION,
+                "q": _search,
+                "start": _start,
+                "n": self._CHANGE_LIMIT,
             }
             if len(self._pass) != 0 and len(self._user) != 0:
                 response = requests.get(
@@ -51,7 +86,7 @@ class Gerrit(object):
             else:
                 response = requests.get(url=self._url + "/changes/", params=payload)
             if response.status_code != requests.codes.ok:
-                Logger.error("failed to query change with search %s" % search)
+                Logger.error("failed to query change with search %s" % _search)
                 return None
             return json.loads(response.text.replace(")]}'", ""))
 
@@ -60,8 +95,23 @@ class Gerrit(object):
             return []
         if buf[-1].get("_more_changes", False) is False:
             return buf
-        buf.extend(self.query_changes(search, start + len(buf)))
+        buf.extend(self.query_change(search, start + len(buf)))
         return buf
+
+    def get_sshkey(self, account):
+        if len(self._pass) != 0 and len(self._user) != 0:
+            response = requests.get(
+                url=self._url + "/accounts/" + str(account["_account_id"]) + "/sshkeys",
+                auth=(self._user, self._pass),
+            )
+        else:
+            response = requests.get(
+                url=self._url + "/accounts/" + str(account["_account_id"]) + "/sshkeys"
+            )
+        if response.status_code != requests.codes.ok:
+            Logger.error("failed to get sshkey for account %s" % account["_account_id"])
+            return None
+        return json.loads(response.text.replace(")]}'", ""))
 
     def get_detail(self, change):
         if len(self._pass) != 0 and len(self._user) != 0:
@@ -270,3 +320,61 @@ class Gerrit(object):
             )
             return None
         return json.loads(response.text.replace(")]}'", ""))
+
+    def query_group(self, search, start):
+        def _helper(_search, _start):
+            payload = {
+                "o": self._GROUP_OPTION,
+                "query": _search,
+                "start": _start,
+                "limit": self._GROUP_LIMIT,
+            }
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/groups/",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(url=self._url + "/groups/", params=payload)
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to query group with search %s" % _search)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        buf = _helper(search, start)
+        if buf is None or len(buf) == 0:
+            return []
+        if buf[-1].get("_more_groups", False) is False:
+            return buf
+        buf.extend(self.query_group(search, start + len(buf)))
+        return buf
+
+    def query_project(self, search, start):
+        def _helper(_search, _start):
+            payload = {
+                "o": self._PROJECT_OPTION,
+                "query": _search,
+                "start": _start,
+                "limit": self._PROJECT_LIMIT,
+            }
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/projects/",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(url=self._url + "/projects/", params=payload)
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to query project with search %s" % _search)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        buf = _helper(search, start)
+        if buf is None or len(buf) == 0:
+            return []
+        if buf[-1].get("_more_projects", False) is False:
+            return buf
+        buf.extend(self.query_project(search, start + len(buf)))
+        return buf

@@ -8,6 +8,3 @@ spec:
     port: 8080
     user: user
     pass: pass
-    query:
-      option:
-        - CURRENT_REVISION

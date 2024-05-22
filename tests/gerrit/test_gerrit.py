@@ -15,27 +15,26 @@ def test_gerrit():
             "port": "8080",
             "user": "admin",
             "pass": "D/uccEPCcItsY3Cti4unrkS/zsyW65MZBrEsiHiXpg",
-            "query": {"option": ["CURRENT_REVISION"]},
         }
     }
 
     gerrit = Gerrit(config)
     assert gerrit is not None
 
-    changes = gerrit.query_changes("change:41", 0)
-    assert changes is not None and len(changes) == 1
+    change = gerrit.query_change("change:41", 0)
+    assert change is not None and len(change) == 1
 
-    buf = gerrit.get_detail(changes[0])
+    buf = gerrit.get_detail(change[0])
     assert buf is not None
 
-    buf = gerrit.add_reviewer(changes[0], "admin")
+    buf = gerrit.add_reviewer(change[0], "admin")
     assert buf is not None
 
-    buf = gerrit.delete_reviewer(changes[0], "admin")
+    buf = gerrit.delete_reviewer(change[0], "admin")
     assert buf is not None
 
-    buf = gerrit.add_attention(changes[0], "admin")
+    buf = gerrit.add_attention(change[0], "admin")
     assert buf is not None
 
-    buf = gerrit.remove_attention(changes[0], "admin")
+    buf = gerrit.remove_attention(change[0], "admin")
     assert buf is not None

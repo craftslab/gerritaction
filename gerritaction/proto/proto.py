@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Proto:
+class Change:
     ADD_REVIEWER = "add-reviewer"
     DELETE_REVIEWER = "delete-reviewer"
     ADD_ATTENTION = "add-attention"

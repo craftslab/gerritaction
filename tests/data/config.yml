@@ -8,6 +8,3 @@ spec:
     port: 8080
     user: admin
     pass: D/uccEPCcItsY3Cti4unrkS/zsyW65MZBrEsiHiXpg
-    query:
-      option:
-        - CURRENT_REVISION

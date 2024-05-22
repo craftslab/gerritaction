@@ -27,8 +27,11 @@ class ConfigException(Exception):
 class Config(object):
     def __init__(self):
         self._config_file = None
-        self._gerrit_action = None
-        self._gerrit_query = None
+        self._account_query = None
+        self._change_query = None
+        self._change_action = None
+        self._group_query = None
+        self._project_query = None
 
     @property
     def config_file(self):
@@ -49,21 +52,51 @@ class Config(object):
             raise ConfigException("config invalid")
 
     @property
-    def gerrit_action(self):
-        return self._gerrit_action
+    def account_query(self):
+        return self._account_query
 
-    @gerrit_action.setter
-    def gerrit_action(self, data):
-        if not isinstance(data, str) or len(data.strip()) == 0:
-            raise ConfigException("action invalid")
-        self._gerrit_action = data.strip()
-
-    @property
-    def gerrit_query(self):
-        return self._gerrit_query
-
-    @gerrit_query.setter
-    def gerrit_query(self, data):
+    @account_query.setter
+    def account_query(self, data):
         if not isinstance(data, str) or len(data.strip()) == 0:
             raise ConfigException("query invalid")
-        self._gerrit_query = data.strip()
+        self._account_query = data.strip()
+
+    @property
+    def change_query(self):
+        return self._change_query
+
+    @change_query.setter
+    def change_query(self, data):
+        if not isinstance(data, str) or len(data.strip()) == 0:
+            raise ConfigException("query invalid")
+        self._change_query = data.strip()
+
+    @property
+    def change_action(self):
+        return self._change_action
+
+    @change_action.setter
+    def change_action(self, data):
+        if not isinstance(data, str) or len(data.strip()) == 0:
+            raise ConfigException("action invalid")
+        self._change_action = data.strip()
+
+    @property
+    def group_query(self):
+        return self._group_query
+
+    @group_query.setter
+    def group_query(self, data):
+        if not isinstance(data, str) or len(data.strip()) == 0:
+            raise ConfigException("query invalid")
+        self._group_query = data.strip()
+
+    @property
+    def project_query(self):
+        return self._project_query
+
+    @project_query.setter
+    def project_query(self, data):
+        if not isinstance(data, str) or len(data.strip()) == 0:
+            raise ConfigException("query invalid")
+        self._project_query = data.strip()

@@ -18,8 +18,11 @@ def main():
     try:
         config = Config()
         config.config_file = arg.config_file
-        config.gerrit_action = arg.gerrit_action
-        config.gerrit_query = arg.gerrit_query
+        config.account_query = arg.account_query
+        config.change_query = arg.change_query
+        config.change_action = arg.change_action
+        config.group_query = arg.group_query
+        config.project_query = arg.project_query
     except ConfigException as e:
         Logger.error(str(e))
         return -1

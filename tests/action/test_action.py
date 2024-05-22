@@ -16,7 +16,7 @@ def test_action():
     config.config_file = os.path.join(
         os.path.dirname(__file__), "../data/config.yml".replace("/", os.path.sep)
     )
-    config.gerrit_query = "change:41"
+    config.change_query = "change:41"
 
     action = Action(config)
 
