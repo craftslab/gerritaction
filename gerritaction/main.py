@@ -23,6 +23,7 @@ def main():
         config.change_action = arg.change_action
         config.group_query = arg.group_query
         config.project_query = arg.project_query
+        config.output_file = arg.output_file
     except ConfigException as e:
         Logger.error(str(e))
         return -1

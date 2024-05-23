@@ -49,7 +49,8 @@ docker run -it -v /tmp:/tmp craftslab/gerritaction:latest ./gerritaction --confi
 usage: action.py [-h] --config-file CONFIG_FILE
                  [--account-query ACCOUNT_QUERY] [--change-query CHANGE_QUERY]
                  [--change-action CHANGE_ACTION] [--group-query GROUP_QUERY]
-                 [--project-query PROJECT_QUERY] [-v]
+                 [--project-query PROJECT_QUERY] [--output-file OUTPUT_FILE]
+                 [-v]
 
 Gerrit Action
 
@@ -71,6 +72,8 @@ options:
                         group query (name:admin member:john)
   --project-query PROJECT_QUERY
                         project query (name:test state:active)
+  --output-file OUTPUT_FILE
+                        output file (.json)
   -v, --version         show program's version number and exit
 ```
 

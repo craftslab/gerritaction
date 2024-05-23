@@ -55,6 +55,13 @@ class Argument(object):
             required=False,
         )
         self._parser.add_argument(
+            "--output-file",
+            action="store",
+            dest="output_file",
+            help="output file (.json)",
+            required=False,
+        )
+        self._parser.add_argument(
             "-v", "--version", action="version", version=__version__
         )
 

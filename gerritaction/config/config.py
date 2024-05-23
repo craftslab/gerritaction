@@ -32,6 +32,7 @@ class Config(object):
         self._change_action = None
         self._group_query = None
         self._project_query = None
+        self._output_file = None
 
     @property
     def config_file(self):
@@ -57,9 +58,8 @@ class Config(object):
 
     @account_query.setter
     def account_query(self, data):
-        if not isinstance(data, str) or len(data.strip()) == 0:
-            raise ConfigException("query invalid")
-        self._account_query = data.strip()
+        if isinstance(data, str) and len(data.strip()) != 0:
+            self._account_query = data.strip()
 
     @property
     def change_query(self):
@@ -67,9 +67,8 @@ class Config(object):
 
     @change_query.setter
     def change_query(self, data):
-        if not isinstance(data, str) or len(data.strip()) == 0:
-            raise ConfigException("query invalid")
-        self._change_query = data.strip()
+        if isinstance(data, str) and len(data.strip()) != 0:
+            self._change_query = data.strip()
 
     @property
     def change_action(self):
@@ -77,9 +76,8 @@ class Config(object):
 
     @change_action.setter
     def change_action(self, data):
-        if not isinstance(data, str) or len(data.strip()) == 0:
-            raise ConfigException("action invalid")
-        self._change_action = data.strip()
+        if isinstance(data, str) and len(data.strip()) != 0:
+            self._change_action = data.strip()
 
     @property
     def group_query(self):
@@ -87,9 +85,8 @@ class Config(object):
 
     @group_query.setter
     def group_query(self, data):
-        if not isinstance(data, str) or len(data.strip()) == 0:
-            raise ConfigException("query invalid")
-        self._group_query = data.strip()
+        if isinstance(data, str) and len(data.strip()) != 0:
+            self._group_query = data.strip()
 
     @property
     def project_query(self):
@@ -97,6 +94,19 @@ class Config(object):
 
     @project_query.setter
     def project_query(self, data):
-        if not isinstance(data, str) or len(data.strip()) == 0:
-            raise ConfigException("query invalid")
-        self._project_query = data.strip()
+        if isinstance(data, str) and len(data.strip()) != 0:
+            self._project_query = data.strip()
+
+    @property
+    def output_file(self):
+        return self._output_file
+
+    @output_file.setter
+    def output_file(self, name):
+        if isinstance(name, str) and len(name.strip()) != 0:
+            name = name.strip()
+            if not name.endswith(".json"):
+                raise ConfigException("suffix invalid")
+            if os.path.exists(name):
+                raise ConfigException("%s exists already" % name)
+            self._output_file = name

@@ -41,7 +41,7 @@ class Gerrit(object):
             self._url = self._host + ":" + self._port
 
     def query_account(self, search, start):
-        def _helper(_search, _start):
+        def _accounts(_search, _start):
             payload = {
                 "o": self._ACCOUNT_OPTION,
                 "q": _search,
@@ -61,11 +61,28 @@ class Gerrit(object):
                 return None
             return json.loads(response.text.replace(")]}'", ""))
 
-        buf = _helper(search, start)
+        def _deduplicate(data):
+            buf = []
+            key = []
+            for item in data:
+                k = item.get("ssh_public_key", "")
+                if k not in key:
+                    key.append(k)
+            for item in data:
+                if item.get("ssh_public_key", "") in key:
+                    buf.append(item)
+            return buf
+
+        def _sshkeys(data):
+            for i in range(len(data)):
+                data[i]["sshkeys"] = _deduplicate(self.get_sshkey(data[i]))
+            return data
+
+        buf = _accounts(search, start)
         if buf is None or len(buf) == 0:
             return []
         if buf[-1].get("_more_accounts", False) is False:
-            return buf
+            return _sshkeys(buf)
         buf.extend(self.query_account(search, start + len(buf)))
         return buf
 
