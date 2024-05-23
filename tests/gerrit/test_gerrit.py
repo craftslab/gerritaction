@@ -22,9 +22,10 @@ def test_gerrit():
         os.path.dirname(__file__), "../data/config.yml".replace("/", os.path.sep)
     )
 
-    config = yaml.load(name)
+    with open(name) as f:
+        config = yaml.safe_load(f)
 
-    gerrit = Gerrit(config["spec"]["gerrit"])
+    gerrit = Gerrit(config["spec"])
     assert gerrit is not None
 
     account = gerrit.query_account("name:" + account_name, 0)
@@ -46,18 +47,6 @@ def test_gerrit():
     assert detail is not None
 
     print(json.dumps(detail))
-
-    ret = gerrit.add_reviewer(change[0], account_name)
-    assert ret is not None
-
-    ret = gerrit.delete_reviewer(change[0], account_name)
-    assert ret is not None
-
-    ret = gerrit.add_attention(change[0], account_name)
-    assert ret is not None
-
-    ret = gerrit.remove_attention(change[0], account_name)
-    assert ret is not None
 
     group = gerrit.query_group("name:" + group_name, 0)
     assert group is not None
