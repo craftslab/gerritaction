@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
+import os
+import yaml
+
 from gerritaction.gerrit.gerrit import Gerrit, GerritException
 
 
@@ -9,32 +13,58 @@ def test_exception():
 
 
 def test_gerrit():
-    config = {
-        "gerrit": {
-            "host": "http://127.0.0.1",
-            "port": "8080",
-            "user": "admin",
-            "pass": "D/uccEPCcItsY3Cti4unrkS/zsyW65MZBrEsiHiXpg",
-        }
-    }
+    account_name = "admin"
+    change_number = 1
+    group_name = "Administrators"
+    project_name = "test"
 
-    gerrit = Gerrit(config)
+    name = os.path.join(
+        os.path.dirname(__file__), "../data/config.yml".replace("/", os.path.sep)
+    )
+
+    config = yaml.load(name)
+
+    gerrit = Gerrit(config["spec"]["gerrit"])
     assert gerrit is not None
 
-    change = gerrit.query_change("change:41", 0)
-    assert change is not None and len(change) == 1
+    account = gerrit.query_account("name:" + account_name, 0)
+    assert account is not None
 
-    buf = gerrit.get_detail(change[0])
-    assert buf is not None
+    print(json.dumps(account))
 
-    buf = gerrit.add_reviewer(change[0], "admin")
-    assert buf is not None
+    change = gerrit.query_change("change:" + str(change_number), 0)
+    assert change is not None
 
-    buf = gerrit.delete_reviewer(change[0], "admin")
-    assert buf is not None
+    print(json.dumps(change))
 
-    buf = gerrit.add_attention(change[0], "admin")
-    assert buf is not None
+    sshkey = gerrit.get_sshkey(account[0])
+    assert sshkey is not None
 
-    buf = gerrit.remove_attention(change[0], "admin")
-    assert buf is not None
+    print(json.dumps(sshkey))
+
+    detail = gerrit.get_detail(change[0])
+    assert detail is not None
+
+    print(json.dumps(detail))
+
+    ret = gerrit.add_reviewer(change[0], account_name)
+    assert ret is not None
+
+    ret = gerrit.delete_reviewer(change[0], account_name)
+    assert ret is not None
+
+    ret = gerrit.add_attention(change[0], account_name)
+    assert ret is not None
+
+    ret = gerrit.remove_attention(change[0], account_name)
+    assert ret is not None
+
+    group = gerrit.query_group("name:" + group_name, 0)
+    assert group is not None
+
+    print(json.dumps(group))
+
+    project = gerrit.query_project("name:" + project_name, 0)
+    assert project is not None
+
+    print(json.dumps(project))

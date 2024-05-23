@@ -65,7 +65,7 @@ def test_config():
         assert False
 
     try:
-        config.account_query = ("account query (name:john email:example.com)",)
+        config.account_query = "name:john email:example.com"
     except ConfigException as _:
         assert False
     else:
@@ -86,7 +86,7 @@ def test_config():
         assert False
 
     try:
-        config.change_query = "change query (since:2024-01-01 until:2024-01-02)"
+        config.change_query = "since:2024-01-01 until:2024-01-02"
     except ConfigException as _:
         assert False
     else:
@@ -108,7 +108,7 @@ def test_config():
 
     try:
         config.change_action = (
-            "delete-reviewer:{account-id,...},remove-attention:{account-id,...})"
+            "delete-reviewer:{account-id},remove-attention:{account-id}"
         )
     except ConfigException as _:
         assert False
@@ -130,7 +130,7 @@ def test_config():
         assert False
 
     try:
-        config.group_query = ("group query (name:admin member:john)",)
+        config.group_query = "name:admin member:john"
     except ConfigException as _:
         assert False
     else:
@@ -151,7 +151,7 @@ def test_config():
         assert False
 
     try:
-        config.project_query = ("project query (name:test state:active)",)
+        config.project_query = "name:test state:active"
     except ConfigException as _:
         assert False
     else:
