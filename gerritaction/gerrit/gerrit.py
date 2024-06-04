@@ -31,7 +31,7 @@ class Gerrit(object):
         if config is None or config.get("gerrit", None) is None:
             raise GerritException("config invalid")
         self._config = config["gerrit"]
-        self._host = str(self._config.get("host", "http://127.0.0.1"))
+        self._host = str(self._config.get("host", "http://127.0.0.1")).rstrip('/')
         self._port = str(self._config.get("port", 8080))
         self._user = str(self._config.get("user", ""))
         self._pass = str(self._config.get("pass", ""))
