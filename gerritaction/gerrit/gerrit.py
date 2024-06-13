@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import json
+import urllib.parse
+
 import requests
 
 from ..proto.proto import Separator
@@ -414,4 +416,4 @@ class Gerrit(object):
                 return None
             return json.loads(response.text.replace(")]}'", ""))
 
-        return _helper(name)
+        return _helper(urllib.parse.quote(name, safe=""))
