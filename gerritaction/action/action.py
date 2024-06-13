@@ -95,15 +95,27 @@ class Action(object):
                 json.dump(group, f, ensure_ascii=False, indent=4)
 
     def _run_project_query(self):
-        def _helper(data):
+        def _config(data):
             for index in range(len(data)):
                 data[index]["config"] = self._gerrit.get_config(data[index]["name"])
+            return data
+
+        def _branches(data):
+            for index in range(len(data)):
+                data[index]["branches"] = self._gerrit.get_branches(data[index]["name"])
+            return data
+
+        def _tags(data):
+            for index in range(len(data)):
+                data[index]["tags"] = self._gerrit.get_tags(data[index]["name"])
             return data
 
         project = self._gerrit.query_project(search=self._config.project_query, start=0)
         if project is None:
             raise ActionException("project invalid")
-        project = _helper(project)
+        project = _config(project)
+        project = _branches(project)
+        project = _tags(project)
         if self._output is None:
             print(json.dumps(project))
         else:

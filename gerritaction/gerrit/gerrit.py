@@ -417,3 +417,43 @@ class Gerrit(object):
             return json.loads(response.text.replace(")]}'", ""))
 
         return _helper(urllib.parse.quote(name, safe=""))
+
+    def get_branches(self, name):
+        def _helper(_name):
+            payload = {}
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/projects/" + _name + "/branches",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(
+                    url=self._url + "/projects/" + _name + "/branches", params=payload
+                )
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to get branches with name %s" % _name)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        return _helper(urllib.parse.quote(name, safe=""))
+
+    def get_tags(self, name):
+        def _helper(_name):
+            payload = {}
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/projects/" + _name + "/tags",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(
+                    url=self._url + "/projects/" + _name + "/tags", params=payload
+                )
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to get tags with name %s" % _name)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        return _helper(urllib.parse.quote(name, safe=""))

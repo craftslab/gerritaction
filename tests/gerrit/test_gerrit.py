@@ -62,3 +62,13 @@ def test_gerrit():
     assert config is not None
 
     print(json.dumps(config))
+
+    branches = gerrit.get_branches(project_name)
+    assert branches is not None
+
+    print(json.dumps(branches))
+
+    tags = gerrit.get_tags(project_name)
+    assert tags is not None
+
+    print(json.dumps(tags))
