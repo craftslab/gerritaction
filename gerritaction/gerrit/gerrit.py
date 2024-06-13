@@ -395,3 +395,23 @@ class Gerrit(object):
             return buf
         buf.extend(self.query_project(search, start + len(buf)))
         return buf
+
+    def get_config(self, name):
+        def _helper(_name):
+            payload = {}
+            if len(self._pass) != 0 and len(self._user) != 0:
+                response = requests.get(
+                    url=self._url + "/projects/" + _name + "/config",
+                    auth=(self._user, self._pass),
+                    params=payload,
+                )
+            else:
+                response = requests.get(
+                    url=self._url + "/projects/" + _name + "/config", params=payload
+                )
+            if response.status_code != requests.codes.ok:
+                Logger.error("failed to get config with name %s" % _name)
+                return None
+            return json.loads(response.text.replace(")]}'", ""))
+
+        return _helper(name)

@@ -57,3 +57,8 @@ def test_gerrit():
     assert project is not None
 
     print(json.dumps(project))
+
+    config = gerrit.get_config(project_name)
+    assert config is not None
+
+    print(json.dumps(config))

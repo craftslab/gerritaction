@@ -95,9 +95,15 @@ class Action(object):
                 json.dump(group, f, ensure_ascii=False, indent=4)
 
     def _run_project_query(self):
+        def _helper(data):
+            for index in range(len(data)):
+                data[index]["config"] = self._gerrit.get_config(data[index]["name"])
+            return data
+
         project = self._gerrit.query_project(search=self._config.project_query, start=0)
         if project is None:
             raise ActionException("project invalid")
+        project = _helper(project)
         if self._output is None:
             print(json.dumps(project))
         else:
