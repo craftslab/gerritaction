@@ -24,8 +24,8 @@ class Gerrit(object):
     _ACCOUNT_OPTION = ["DETAILS"]
     _CHANGE_LIMIT = 1000
     _CHANGE_OPTION = [
-        "CURRENT_FILES",
-        "CURRENT_REVISION",
+        "ALL_FILES",
+        "ALL_REVISIONS",
         "DETAILED_ACCOUNTS",
         "DETAILED_LABELS",
     ]
